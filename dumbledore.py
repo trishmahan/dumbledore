@@ -11,8 +11,10 @@ import wolframalpha
 import json
 import requests
 
-engine = pyttsx3.init('sapi5')
+engine = pyttsx3.init()
+rate = engine.getProperty('rate')
+engine.setProperty('rate', 160)
 voices = engine.getProperty('voices')
-engine.setProperty('voice', 'voices[0].id')
-engine.say("I will speak this text")
+engine.setProperty('voice', voices[0].id)
+engine.say("It does not do... to dwell on dreams... and forget to live")
 engine.runAndWait()

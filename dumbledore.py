@@ -39,6 +39,10 @@ def speak_with_google(input_text):
         # print('Audio content written to file "output.mp3"')
         os.system("afplay output.mp3")
 
+#### TODO - LIMIT API CALLS with pre-recordings
+# def speak_with_recording(recording_name):
+#     os.system("afplay " + recording_name)
+
 ### BAD VOICE
 # print("Loading your AI personal assistant Dumbledore")
 # # create voice engine
@@ -104,6 +108,26 @@ if __name__ == '__main__':
         if "good bye" in statement or "ok bye" in statement or "stop" in statement:
             speak_with_google("Shutting down now, Good bye!")
             break
+    ###### SKILLS SECTION ######
         if "tell me something" in statement or "say something" in statement or "i don't know" in statement:
             speak_with_google(dumbledoreQuotes[random.randint(len(dumbledoreQuotes))])
+        elif "wikipedia" in statement:
+            speak_with_google('Searching Wikipedia...')
+            statement = statement.replace("wikipedia", "")
+            results = wikipedia.summary(statement, sentences = 3)
+            speak_with_google("According to Wikipedia...")
+            print(results)
+            #### TODO Parse Results Better...
+            speak_with_google(results)
+        elif "time" in statement:
+            time_str = datetime.datetime.now().strftime("%H:%M")
+            response = "the time is " + time_str
+            speak_with_google(response)
+        elif "who made you" in statement or "who created you" in statement:
+            print(name)
+            if name == "trish":
+                speak_with_google("Well, my parents are Percival and Kendra. My hard work and practice made me the wizard I was. My defeat of Grindelwald made me famous. And, you, programmed me into this MacBook")
+            else:
+                speak_with_google("Well, my parents are Percival and Kendra. My hard work and practice made me the wizard I was. My defeat of Grindelwald made me famous. And Trish programmed me into this MacBook")
+        
 time.sleep(5)

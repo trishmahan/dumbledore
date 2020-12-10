@@ -11,18 +11,42 @@ import wolframalpha
 import json
 import requests
 from numpy import random
+from google.cloud import texttospeech
 
-print("Loading your AI personal assistant Dumbledore")
-# create voice engine
-engine = pyttsx3.init()
-rate = engine.getProperty('rate')
-engine.setProperty('rate', 160)
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id)
+# Instantiates a client
+speech_client = texttospeech.TextToSpeechClient()
 
-def speak(text):
-    engine.say(text)
-    engine.runAndWait()
+def speak_with_google(input_text):
+    # Set the text input to be synthesized
+    synthesis_input = texttospeech.SynthesisInput(text=input_text)
+    # Build the voice request, select the language code ("en-US") and the ssml
+    voice = texttospeech.VoiceSelectionParams(
+        language_code="en-GB", name="en-GB-Wavenet-D"#, ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
+    )
+    # Select the type of audio file you want returned
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.MP3
+    )
+    # Perform the text-to-speech request on the text input with the selected
+    # voice parameters and audio file type
+    response = speech_client.synthesize_speech(
+        input=synthesis_input, voice=voice, audio_config=audio_config
+    )
+    # The response's audio_content is binary.
+    with open("output.mp3", "wb") as out:
+        # Write the response to the output file.
+        out.write(response.audio_content)
+        # print('Audio content written to file "output.mp3"')
+        os.system("afplay output.mp3")
+
+### BAD VOICE
+# print("Loading your AI personal assistant Dumbledore")
+# # create voice engine
+# engine = pyttsx3.init()
+# rate = engine.getProperty('rate')
+# engine.setProperty('rate', 160)
+# voices = engine.getProperty('voices')
+# engine.setProperty('voice', voices[7].id)
 
 dumbledoreQuotes = ["It does not do... to dwell on dreams... and forget to live", 
         "Happiness can be found, even in the darkest of times, if one only remembers to turn on the light.",  
@@ -46,7 +70,7 @@ def greetUser(name):
     else:
          greeting += " Good Evening"
     greeting += ", how can I help you"
-    speak(greeting)
+    speak_with_google(greeting)
 
 def takeCommand(pause):
     if pause == 0:
@@ -54,23 +78,23 @@ def takeCommand(pause):
     r = sr.Recognizer()
     mic = sr.Microphone()
     with mic as source:
-        print("Listening...")
         r.adjust_for_ambient_noise(source)
+        print("Listening...")
         audio = r.listen(source, timeout=5, phrase_time_limit=6)
         try:
             statement = r.recognize_google(audio)
             print("user said: " + statement)
         except LookupError:
-            speak("Excuse me, will you please repeat that?")
+            speak_with_google("Excuse me, will you please repeat that?")
             return "None"
         return statement
 
-speak("Loading Dumbledore")
-#
+speak_with_google("Loading Dumbledore")
+
 if __name__ == '__main__':
     name = ""
     while name == "":
-        speak("Hello, what is your name")
+        speak_with_google("Hello, what is your name")
         name = takeCommand(5).lower()
         greetUser(name)
     while True:
@@ -78,8 +102,8 @@ if __name__ == '__main__':
         if statement == 0:
             continue
         if "good bye" in statement or "ok bye" in statement or "stop" in statement:
-            speak("Shutting down now, Good bye!")
+            speak_with_google("Shutting down now, Good bye!")
             break
         if "tell me something" in statement or "say something" in statement or "i don't know" in statement:
-            speak(dumbledoreQuotes[random.randint(len(dumbledoreQuotes))])
-time.sleep(3)
+            speak_with_google(dumbledoreQuotes[random.randint(len(dumbledoreQuotes))])
+time.sleep(5)

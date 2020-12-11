@@ -162,4 +162,6 @@ if __name__ == '__main__':
                 feels_like = convertKtoF(feels_like)
                 txt_response = "The temperature is " + str(current_temp) + ", though it feels like " + str(feels_like)
                 speak_with_google(txt_response)
+        else:
+            speak_with_google("I'm sorry, could you repeat that?")
 time.sleep(5)

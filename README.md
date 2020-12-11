@@ -6,8 +6,7 @@ Me = Mac
 - `python3 -m venv dumpy`
 - `source dumpy/bin/activate`
 - `pip install -r requirements.txt`
-- update dumbledore.py with google auth json
-- update dumbledore.py with openweathermap key as weather_key
+- create .env, adding filepath to Google JSON  as GOOGLE and openweathermap API key as WEATHER 
 
 Demo List
 - `what can I say` or `what commands`

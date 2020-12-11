@@ -131,11 +131,13 @@ if __name__ == '__main__':
         elif "wikipedia" in statement:
             speak_with_google('Searching Wikipedia...')
             statement = statement.replace("wikipedia", "")
-            results = wikipedia.summary(statement, sentences = 3)
-            speak_with_google("According to Wikipedia...")
-            print(results)
-            #### TODO Parse Results Better...
-            speak_with_google(results)
+            if statement != "":
+                results = wikipedia.summary(statement, sentences = 3)
+                speak_with_google("According to Wikipedia...")
+                print(results)
+                #### TODO Parse Results Better...
+                speak_with_google(results)
+            else: speak_with_google("I'm sorry, could you repeat that?")
         elif "time" in statement:
             time_str = datetime.datetime.now().strftime("%H:%M")
             response = "the time is " + time_str

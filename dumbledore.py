@@ -13,6 +13,8 @@ import json
 import requests
 from numpy import random
 from google.cloud import texttospeech
+## -- need to create through google cloud services
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'Travel-7635e462718e.json'
 
 # Instantiates a TTS client
 speech_client = texttospeech.TextToSpeechClient()

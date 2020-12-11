@@ -13,8 +13,16 @@ import json
 import requests
 from numpy import random
 from google.cloud import texttospeech
+## -- load weather api key
+from dotenv import load_dotenv
+from pathlib import Path  # Python 3.6+ only
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
+load_dotenv()
+weather_key = os.getenv("WEATHER")
 ## -- need to create through google cloud services
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'Travel-7635e462718e.json'
+google_env = os.getenv("GOOGLE")
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = google_env
 
 # Instantiates a TTS client
 speech_client = texttospeech.TextToSpeechClient()

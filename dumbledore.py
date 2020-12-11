@@ -144,6 +144,9 @@ if __name__ == '__main__':
                 speak_with_google("Well, my parents are Percival and Kendra. My hard work and practice made me the wizard I was. My defeat of Grindelwald made me famous. And, you, programmed me into this MacBook")
             else:
                 speak_with_google("Well, my parents are Percival and Kendra. My hard work and practice made me the wizard I was. My defeat of Grindelwald made me famous. And Trish programmed me into this MacBook")
+        ### want to migrate this list later, and key some of these conditionals off of
+        elif "what can I say" in statement or "what commands" in statement:
+            commands = "Current commands include good bye, say something, wikipedia, time, who made you, and weather."
         elif "weather" in statement:
             ### TODO: get users location or ask user for weather stats
             base_url = "http://api.openweathermap.org/data/2.5/weather?"

@@ -1,3 +1,4 @@
+# tool box
 import speech_recognition as sr
 import pyttsx3
 import datetime
@@ -13,9 +14,10 @@ import requests
 from numpy import random
 from google.cloud import texttospeech
 
-# Instantiates a client
+# Instantiates a TTS client
 speech_client = texttospeech.TextToSpeechClient()
 
+# Give speech client text to speak
 def speak_with_google(input_text):
     # Set the text input to be synthesized
     synthesis_input = texttospeech.SynthesisInput(text=input_text)
@@ -64,6 +66,7 @@ dumbledoreQuotes = ["It does not do... to dwell on dreams... and forget to live"
         "After all, to the well organized mind, death is but the next great adventure",
         "It takes a great deal of bravery to stand up to our enemies, but just as much to stand up to our friends"]
 
+## time of day greeting of user
 def greetUser(name):
     hour = datetime.datetime.now().hour
     greeting = "Hello, " + name + "."
@@ -76,6 +79,7 @@ def greetUser(name):
     greeting += ", how can I help you"
     speak_with_google(greeting)
 
+## listener
 def takeCommand(pause):
     if pause == 0:
         pause == 5
@@ -93,14 +97,25 @@ def takeCommand(pause):
             return "None"
         return statement
 
+## kelvin to farenheit... cause openweathermap
+def convertKtoF(temp):
+    temp = temp * 9 / 5
+    temp = temp - 459.67
+    temp = round(temp, 1)
+    return str(temp)
+
+## warm up voice
 speak_with_google("Loading Dumbledore")
 
+## begin "program"
 if __name__ == '__main__':
     name = ""
+    ## ask for name in order to greet
     while name == "":
         speak_with_google("Hello, what is your name")
         name = takeCommand(5).lower()
         greetUser(name)
+    ## command loop
     while True:
         statement = takeCommand(3).lower()
         if statement == 0:
@@ -129,5 +144,22 @@ if __name__ == '__main__':
                 speak_with_google("Well, my parents are Percival and Kendra. My hard work and practice made me the wizard I was. My defeat of Grindelwald made me famous. And, you, programmed me into this MacBook")
             else:
                 speak_with_google("Well, my parents are Percival and Kendra. My hard work and practice made me the wizard I was. My defeat of Grindelwald made me famous. And Trish programmed me into this MacBook")
-        
+        elif "weather" in statement:
+            ### TODO: get users location or ask user for weather stats
+            base_url = "http://api.openweathermap.org/data/2.5/weather?"
+            city_name = "4752255"
+            complete_url = base_url + "appid=" + weather_key + "&id=" + city_name
+            response = requests.get(complete_url)
+            response_json = response.json()
+            if response_json["cod"] == "404":
+                txt_response = "The weather for " + city_name + " could not be found."
+                speak_with_google(txt_response)
+            else:
+                y = response_json["main"]
+                current_temp = y["temp"]
+                current_temp = convertKtoF(current_temp)
+                feels_like = y["feels_like"]
+                feels_like = convertKtoF(feels_like)
+                txt_response = "The temperature is " + str(current_temp) + ", though it feels like " + str(feels_like)
+                speak_with_google(txt_response)
 time.sleep(5)

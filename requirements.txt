@@ -146,3 +146,4 @@ google-cloud-texttospeech
 pyaudio
 python-dotenv
 pathlib
+elasticsearch

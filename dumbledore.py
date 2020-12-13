@@ -11,6 +11,8 @@ import subprocess
 import wolframalpha
 import json
 import requests
+from elasticsearch import Elasticsearch
+from elasticsearch.helpers import bulk
 from numpy import random
 from google.cloud import texttospeech
 ## -- load weather api key
@@ -98,10 +100,11 @@ def takeCommand(pause):
     with mic as source:
         r.adjust_for_ambient_noise(source)
         print("Listening...")
-        audio = r.listen(source, timeout=5, phrase_time_limit=6)
+        audio = r.listen(source)#, timeout=5, phrase_time_limit=6)
         try:
             statement = r.recognize_google(audio)
             print("user said: " + statement)
+            return statement
         except LookupError:
             speak_with_google("Excuse me, will you please repeat that?")
             return "None"

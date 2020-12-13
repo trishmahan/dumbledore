@@ -120,11 +120,14 @@ def takeCommand(pause):
     if pause == 0:
         pause == 5
     r = sr.Recognizer()
-    mic = sr.Microphone()
+    if len(sr.Microphone.list_microphone_names()) >=3:
+        mic = sr.Microphone(device_index=2)
+    else:
+        mic = sr.Microphone()
     with mic as source:
         r.adjust_for_ambient_noise(source)
         print("Listening...")
-        audio = r.listen(source)#, timeout=5, phrase_time_limit=6)
+        audio = r.listen(source, timeout=5, phrase_time_limit=6)
         try:
             statement = r.recognize_google(audio)
             print("user said: " + statement)

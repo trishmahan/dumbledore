@@ -29,6 +29,30 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = google_env
 # Instantiates a TTS client
 speech_client = texttospeech.TextToSpeechClient()
 
+#### BUILD "OPEN {Application}" SKILLS INDEX ####
+d = '/Applications'
+records = []
+apps = os.listdir(d)
+for app in apps:
+    record = {}
+    record['voice_command'] = 'open ' + app.split('.app')[0]
+    record['sys_command'] = 'open ' + d +'/%s' %app.replace(' ','\ ')
+    records.append(record)
+es = Elasticsearch(['localhost:9200'])
+bulk(es, records, index='mac_apps', raise_on_error=True) #doc_type='text', 
+def search_index(query):
+    res = es.search(index="mac_apps", body={    #doc_type='text',                   
+    "query" :{
+        "match": {
+            "voice_command": {
+                "query": query,
+                "fuzziness": 2
+            }
+            }
+        },
+    })
+    return res['hits']['hits'][0]['_source']['sys_command']
+
 # Give speech client text to speak
 def speak_with_google(input_text):
     # Set the text input to be synthesized
@@ -180,6 +204,9 @@ if __name__ == '__main__':
                 feels_like = convertKtoF(feels_like)
                 txt_response = "The temperature is " + str(current_temp) + ", though it feels like " + str(feels_like)
                 speak_with_google(txt_response)
+        elif "open" in statement:
+            sys_command = search_index(statement)
+            os.system(sys_command)
         else:
             speak_with_google("I'm sorry, could you repeat that?")
 time.sleep(5)

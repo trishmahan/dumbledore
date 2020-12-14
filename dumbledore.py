@@ -1,6 +1,5 @@
 # tool box
 import speech_recognition as sr
-import pyttsx3
 import datetime
 import wikipedia
 import webbrowser
@@ -81,15 +80,6 @@ def speak_with_google(input_text):
 # def speak_with_recording(recording_name):
 #     os.system("afplay " + recording_name)
 
-### BAD VOICE
-# print("Loading your AI personal assistant Dumbledore")
-# # create voice engine
-# engine = pyttsx3.init()
-# rate = engine.getProperty('rate')
-# engine.setProperty('rate', 160)
-# voices = engine.getProperty('voices')
-# engine.setProperty('voice', voices[7].id)
-
 dumbledoreQuotes = ["It does not do... to dwell on dreams... and forget to live", 
         "Happiness can be found, even in the darkest of times, if one only remembers to turn on the light.",  
         "We must all face the choice between... what is right... and what is easy", 
@@ -144,7 +134,7 @@ def convertKtoF(temp):
     temp = round(temp, 1)
     return str(temp)
 
-## warm up voice
+## warm up voice, not necessary but I like it
 speak_with_google("Loading Dumbledore")
 
 ## begin "program"

@@ -76,9 +76,9 @@ def speak_with_google(input_text):
         # print('Audio content written to file "output.mp3"')
         os.system("afplay output.mp3")
 
-#### TODO - LIMIT API CALLS with pre-recordings
-# def speak_with_recording(recording_name):
-#     os.system("afplay " + recording_name)
+#### Limit API calls with pre-recordings
+def speak_with_recording(recording_name):
+    os.system("afplay " + recording_name)
 
 dumbledoreQuotes = ["It does not do... to dwell on dreams... and forget to live", 
         "Happiness can be found, even in the darkest of times, if one only remembers to turn on the light.",  
@@ -96,14 +96,13 @@ dumbledoreQuotes = ["It does not do... to dwell on dreams... and forget to live"
 def greetUser(name):
     hour = datetime.datetime.now().hour
     greeting = "Hello, " + name + "."
-    if hour >= 0 and hour < 12:
-        greeting += " Good Morning"
-    elif hour >= 12 and hour < 18:
-        greeting += " Good Afternoon"
-    else:
-         greeting += " Good Evening"
-    greeting += ", how can I help you"
     speak_with_google(greeting)
+    if hour >= 0 and hour < 12:
+        speak_with_recording("pre-recordings/morning.mp3")
+    elif hour >= 12 and hour < 18:
+        speak_with_recording("pre-recordings/afternoon.mp3")
+    else:
+         speak_with_recording("pre-recordings/evening.mp3")
 
 ## listener
 def takeCommand(pause):
@@ -123,7 +122,7 @@ def takeCommand(pause):
             print("user said: " + statement)
             return statement
         except LookupError:
-            speak_with_google("Excuse me, will you please repeat that?")
+            speak_with_recording("pre-recordings/repeat.mp3")
             return "None"
         return statement
 
@@ -135,14 +134,14 @@ def convertKtoF(temp):
     return str(temp)
 
 ## warm up voice, not necessary but I like it
-speak_with_google("Loading Dumbledore")
+speak_with_recording("pre-recordings/loading.mp3")
 
 ## begin "program"
 if __name__ == '__main__':
     name = ""
     ## ask for name in order to greet
     while name == "":
-        speak_with_google("Hello, what is your name")
+        speak_with_recording("pre-recordings/greet-ask-name.mp3")
         name = takeCommand(5).lower()
         greetUser(name)
     ## command loop
@@ -151,21 +150,21 @@ if __name__ == '__main__':
         if statement == 0:
             continue
         if "good bye" in statement or "ok bye" in statement or "stop" in statement:
-            speak_with_google("Shutting down now, Good bye!")
+            speak_with_recording("pre-recordings/kill.mp3")
             break
     ###### SKILLS SECTION ######
         if "tell me something" in statement or "say something" in statement or "i don't know" in statement:
             speak_with_google(dumbledoreQuotes[random.randint(len(dumbledoreQuotes))])
         elif "wikipedia" in statement:
-            speak_with_google('Searching Wikipedia...')
+            speak_with_recording('pre-recordings/wiki-search.mp3')
             statement = statement.replace("wikipedia", "")
             if statement != "":
                 results = wikipedia.summary(statement, sentences = 3)
-                speak_with_google("According to Wikipedia...")
+                speak_with_recording("pre-recordings/wiki-results.mp3")
                 print(results)
                 #### TODO Parse Results Better...
                 speak_with_google(results)
-            else: speak_with_google("I'm sorry, could you repeat that?")
+            else: speak_with_recording("pre-recordings/repeat.mp3")
         elif "time" in statement:
             time_str = datetime.datetime.now().strftime("%H:%M")
             response = "the time is " + time_str

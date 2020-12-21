@@ -12,6 +12,7 @@ import json
 import requests
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
+from airtable import Airtable
 from numpy import random
 from google.cloud import texttospeech
 ## -- load weather api key
@@ -91,6 +92,12 @@ dumbledoreQuotes = ["It does not do... to dwell on dreams... and forget to live"
         "It is the unknown we fear when we look upon death and darkness. Nothing more",
         "After all, to the well organized mind, death is but the next great adventure",
         "It takes a great deal of bravery to stand up to our enemies, but just as much to stand up to our friends"]
+### Access Dumbledore quotes from Airtable
+base_key = 'appttoI7Igvb8NoD8'
+table_name = 'Sounds'
+airtable = Airtable(base_key, table_name, api_key=os.getenv('AIRTABLE_API_KEY'))
+dumbledore_quotes = airtable.get_all(view='Quotes', maxRecords=20)
+
 
 ## time of day greeting of user
 def greetUser(name):
@@ -162,7 +169,7 @@ if __name__ == '__main__':
                 results = wikipedia.summary(statement, sentences = 3)
                 speak_with_recording("pre-recordings/wiki-results.mp3")
                 print(results)
-                #### TODO Parse Results Better...
+                #### TODO Parse Results Better... (https://wikipedia.readthedocs.io/en/latest/code.html)
                 speak_with_google(results)
             else: speak_with_recording("pre-recordings/repeat.mp3")
         elif "time" in statement:
